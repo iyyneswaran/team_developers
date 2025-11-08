@@ -11,7 +11,7 @@ const Navbar = () => {
     <div>
       <nav className={styles.bottomNav}>
         {/* Home */}
-        <Link to="/home" className={styles.navBtn}>
+        <Link to="/" className={styles.navBtn}>
           <FiHome size={20} />
           <span>Home</span>
         </Link>

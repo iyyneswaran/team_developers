@@ -10,22 +10,14 @@ import Navbar from "../nav/Navbar";
 
 export default function Chat() {
   const [messages, setMessages] = useState([
-    {
-      id: 1,
-      from: "bot",
-      text: "How can I help today?",
-    },
-    {
-      id: 2,
-      from: "user",
-      text: "There’s some black spots in my paddy leaves",
-    },
+    { id: 1, from: "bot", text: "How can I help today?" },
+    { id: 2, from: "user", text: "There’s some black spots in my paddy leaves" },
   ]);
   const [input, setInput] = useState("");
   const [sessionId, setSessionId] = useState(() => `sess_${Date.now()}`);
   const [lang, setLang] = useState("en");
 
-  // history dropdown (right-top)
+  // history dropdown
   const [history, setHistory] = useState([]);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [historySearch, setHistorySearch] = useState("");
@@ -220,7 +212,7 @@ export default function Chat() {
   return (
     <div className={styles.page}>
       <div className={styles.container}>
-        {/* Header (matches desktop image) */}
+        {/* Header */}
         <header className={styles.topbar}>
           <div className={styles.topbarLeft}>
             <Link to="/home" className={styles.backBtn} aria-label="Back">
@@ -296,17 +288,13 @@ export default function Chat() {
             {messages.map((m) => (
               <div
                 key={m.id}
-                className={`${styles.messageRow} ${
-                  m.from === "user" ? styles.rowRight : styles.rowLeft
-                }`}
+                className={`${styles.messageRow} ${m.from === "user" ? styles.rowRight : styles.rowLeft}`}
               >
                 {m.from === "bot" && (
                   <img src={robotAvatar} alt="bot" className={styles.smallAvatar} />
                 )}
                 <div
-                  className={`${styles.bubble} ${
-                    m.from === "user" ? styles.bubbleUser : styles.bubbleBot
-                  }`}
+                  className={`${styles.bubble} ${m.from === "user" ? styles.bubbleUser : styles.bubbleBot}`}
                 >
                   <div className={styles.bubbleText}>{m.text}</div>
                 </div>
@@ -332,7 +320,7 @@ export default function Chat() {
               </button>
             </div>
 
-            <button className={styles.sendBtn} onClick={handleSend}>
+            <button className={styles.sendBtn} onClick={handleSend} aria-label="Send">
               <FiSend />
             </button>
           </div>

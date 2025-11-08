@@ -22,15 +22,15 @@ export default function Home() {
   const navigate = useNavigate();
 
   useEffect(() => {
-  let deferredPrompt;
-  function onBeforeInstallPrompt(e) {
-    e.preventDefault();
-    deferredPrompt = e;
-    // show your install button
-  }
-  window.addEventListener('beforeinstallprompt', onBeforeInstallPrompt);
-  return () => window.removeEventListener('beforeinstallprompt', onBeforeInstallPrompt);
-}, []);
+    let deferredPrompt;
+    function onBeforeInstallPrompt(e) {
+      e.preventDefault();
+      deferredPrompt = e;
+      // show your install button
+    }
+    window.addEventListener('beforeinstallprompt', onBeforeInstallPrompt);
+    return () => window.removeEventListener('beforeinstallprompt', onBeforeInstallPrompt);
+  }, []);
 
   const carddetails = [
     {
@@ -132,6 +132,13 @@ export default function Home() {
         </div>
 
         <div className={styles.topActions}>
+
+          <div>
+            <button className={styles.loginButton} onClick={() => navigate('/login')}>
+              login
+            </button>
+          </div>
+
           {/* language dropdown */}
           <div className={styles.langWrapper} ref={langRef}>
             <button

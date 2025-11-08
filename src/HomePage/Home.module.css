@@ -328,3 +328,12 @@
   background: #000000;
   color: #ffffff;
 }
+
+.loginButton {
+  background: #000;
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+}
