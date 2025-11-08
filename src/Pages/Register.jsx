@@ -3,17 +3,16 @@ import styles from "./Register.module.css";
 import { useNavigate } from "react-router-dom";
 
 const BACKEND_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
-const API = `${BACKEND_URL}/api`;
 
 export default function Register() {
   const navigate = useNavigate();
-  const [roleUI, setRoleUI] = useState("farmer"); // UI role
+  const [role, setRole] = useState("user"); // 'user' (Farmer) | 'expert'
   const [form, setForm] = useState({
     name: "",
     email: "",
     password: "",
     phone: "",
-    soilType: "",
+    soil_type: "",    // <— backend field
     pincode: "",
     state: "",
     district: "",
@@ -27,8 +26,6 @@ export default function Register() {
     setForm((s) => ({ ...s, [e.target.name]: e.target.value }));
   }
 
-  const roleForServer = roleUI === "farmer" ? "user" : "expert";
-
   async function onSubmit(e) {
     e.preventDefault();
     setError("");
@@ -37,25 +34,13 @@ export default function Register() {
     try {
       if (!form.name || !form.email || !form.password)
         throw new Error("Please fill all required fields.");
-      if (roleUI === "farmer" && !form.soilType)
+
+      if (role === "user" && !form.soil_type)
         throw new Error("Please provide soil / land type.");
 
-      const body = {
-        role: roleForServer,
-        name: form.name,
-        email: form.email,
-        password: form.password,
-        phone: form.phone,
-        // backend expects soil_type; we send both for safety
-        soil_type: form.soilType,
-        soilType: form.soilType,
-        pincode: form.pincode,
-        state: form.state,
-        district: form.district,
-        city: form.city,
-      };
+      const body = { role, ...form };
 
-      const res = await fetch(`${API}/auth/register`, {
+      const res = await fetch(`${BACKEND_URL}/api/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
@@ -63,17 +48,19 @@ export default function Register() {
 
       const data = await res.json();
       if (!res.ok) {
-        const msg = data?.issues?.[0]?.message || data?.message || "Registration failed";
+        const msg =
+          data?.issues?.[0]?.message ||
+          data?.message ||
+          `Registration failed (${res.status})`;
         throw new Error(msg);
       }
 
-      if (!data?.token || !data?.user) {
-        throw new Error("Invalid response from server");
+      if (!data.token || !data.user) {
+        throw new Error("Malformed response from server.");
       }
 
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
-
       navigate("/profile");
     } catch (err) {
       setError(err.message || "Registration error");
@@ -94,9 +81,9 @@ export default function Register() {
               <input
                 type="radio"
                 name="role"
-                value="farmer"
-                checked={roleUI === "farmer"}
-                onChange={() => setRoleUI("farmer")}
+                value="user"
+                checked={role === "user"}
+                onChange={() => setRole("user")}
               />
               Farmer
             </label>
@@ -105,8 +92,8 @@ export default function Register() {
                 type="radio"
                 name="role"
                 value="expert"
-                checked={roleUI === "expert"}
-                onChange={() => setRoleUI("expert")}
+                checked={role === "expert"}
+                onChange={() => setRole("expert")}
               />
               Expert
             </label>
@@ -176,13 +163,13 @@ export default function Register() {
             onChange={onChange}
           />
 
-          {roleUI === "farmer" && (
+          {role === "user" && (
             <>
               <label className={styles.label}>Soil / Land Type</label>
               <input
                 className={styles.input}
-                name="soilType"
-                value={form.soilType}
+                name="soil_type"
+                value={form.soil_type}
                 onChange={onChange}
                 placeholder="e.g. Red loam, Sandy"
                 required

@@ -5,7 +5,6 @@ import Navbar from "../nav/Navbar";
 import avatar from "../assets/avatar/avatar_farm.png";
 
 const BACKEND_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
-const API = `${BACKEND_URL}/api`;
 
 export default function Profile() {
   const NAV_HEIGHT = 76;
@@ -20,7 +19,7 @@ export default function Profile() {
         return;
       }
       try {
-        const res = await fetch(`${API}/users/me`, {
+        const res = await fetch(`${BACKEND_URL}/api/users/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) {
@@ -30,8 +29,13 @@ export default function Profile() {
           return;
         }
         const data = await res.json();
-        setUser(data.user);
-        localStorage.setItem("user", JSON.stringify(data.user));
+        if (data?.user) {
+          setUser(data.user);
+          localStorage.setItem("user", JSON.stringify(data.user));
+        } else {
+          const cached = localStorage.getItem("user");
+          if (cached) setUser(JSON.parse(cached));
+        }
       } catch (err) {
         console.error("Profile load error", err);
         const cached = localStorage.getItem("user");
@@ -66,7 +70,18 @@ export default function Profile() {
     );
   }
 
-  const { name, email, phone, role, soilType, address } = user;
+  // Backend sends flat fields; map to what UI shows
+  const {
+    name,
+    email,
+    phone,
+    role,
+    soil_type,
+    pincode,
+    state,
+    district,
+    city,
+  } = user;
 
   return (
     <div className={styles.viewport}>
@@ -101,29 +116,29 @@ export default function Profile() {
 
           <label className={styles.fieldLabel}>Role</label>
           <div className={styles.inputBox}>
-            {role === "user" ? "farmer" : role || "-"}
+            {role === "expert" ? "Expert" : "Farmer"}
           </div>
 
-          {role === "user" && soilType && (
+          {role === "user" && soil_type && (
             <>
               <label className={styles.fieldLabel}>Soil / Land Type</label>
-              <div className={styles.inputBox}>{soilType}</div>
+              <div className={styles.inputBox}>{soil_type}</div>
             </>
           )}
 
           <h4 className={styles.subTitle}>Address</h4>
 
           <label className={styles.fieldLabel}>Pincode</label>
-          <div className={styles.inputBox}>{address?.pincode || "-"}</div>
+          <div className={styles.inputBox}>{pincode || "-"}</div>
 
           <label className={styles.fieldLabel}>State</label>
-          <div className={styles.inputBox}>{address?.state || "-"}</div>
+          <div className={styles.inputBox}>{state || "-"}</div>
 
           <label className={styles.fieldLabel}>District</label>
-          <div className={styles.inputBox}>{address?.district || "-"}</div>
+          <div className={styles.inputBox}>{district || "-"}</div>
 
           <label className={styles.fieldLabel}>City</label>
-          <div className={styles.inputBox}>{address?.city || "-"}</div>
+          <div className={styles.inputBox}>{city || "-"}</div>
 
           <div style={{ height: NAV_HEIGHT }} />
           {typeof Navbar === "function" ? <Navbar /> : null}
