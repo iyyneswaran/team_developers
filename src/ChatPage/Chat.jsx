@@ -1,40 +1,50 @@
 // src/components/Chat.jsx
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 import styles from "./Chat.module.css";
-import { FiMic, FiSend, FiX } from "react-icons/fi";
+import { FiMic, FiSend, FiX, FiChevronDown, FiSearch } from "react-icons/fi";
 import { IoChevronBack } from "react-icons/io5";
-import Navbar from "../nav/Navbar";
+import { Link } from "react-router-dom";
 import robotAvatar from "../assets/avatar/bot.png";
 import userAvatar from "../assets/avatar/avatar_farm.png";
-import { Link } from "react-router-dom";
+import Navbar from "../nav/Navbar";
 
 export default function Chat() {
   const [messages, setMessages] = useState([
-    { id: 1, from: "bot", text: "🌾 Hi there! I’m FreshAir — your agriculture assistant. How can I help today?" },
+    {
+      id: 1,
+      from: "bot",
+      text: "How can I help today?",
+    },
+    {
+      id: 2,
+      from: "user",
+      text: "There’s some black spots in my paddy leaves",
+    },
   ]);
   const [input, setInput] = useState("");
   const [sessionId, setSessionId] = useState(() => `sess_${Date.now()}`);
   const [lang, setLang] = useState("en");
 
-  const [history, setHistory] = useState([]); // list of sessions
+  // history dropdown (right-top)
+  const [history, setHistory] = useState([]);
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const [historySearch, setHistorySearch] = useState("");
+
   const scrollRef = useRef(null);
   const inputRef = useRef(null);
   const [voiceOpen, setVoiceOpen] = useState(false);
   const [listening, setListening] = useState(false);
   const recognitionRef = useRef(null);
 
+  // autoscroll
   useEffect(() => {
-    if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
   }, [messages]);
 
+  // fetch chat sessions for header dropdown
   useEffect(() => {
-    const onKey = (e) => e.key === "Escape" && closeVoiceOverlay();
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, []);
-
-  useEffect(() => {
-    // fetch chat sessions for history panel on mount
     const BASE_URL = (import.meta.env.VITE_API_URL || "http://localhost:5000").trim();
     fetch(`${BASE_URL}/api/chats`)
       .then((r) => r.json())
@@ -44,19 +54,18 @@ export default function Chat() {
       .catch(() => {});
   }, []);
 
+  // load a session’s messages whenever sessionId changes
   useEffect(() => {
-    // load history for this session if exists
     const BASE_URL = (import.meta.env.VITE_API_URL || "http://localhost:5000").trim();
     fetch(`${BASE_URL}/api/chat/${sessionId}`)
       .then((r) => r.json())
       .then((d) => {
-        if (Array.isArray(d)) {
-          setMessages(d);
-        }
+        if (Array.isArray(d) && d.length) setMessages(d);
       })
       .catch(() => {});
   }, [sessionId]);
 
+  // ===== Speech =====
   function createRecognition() {
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SR) return null;
@@ -77,6 +86,18 @@ export default function Chat() {
     return rec;
   }
 
+  function speakText(text, language = "en") {
+    if (!("speechSynthesis" in window)) return;
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = language;
+    const voices = window.speechSynthesis.getVoices();
+    const v = voices.find((vv) => vv.lang?.startsWith(language));
+    if (v) utter.voice = v;
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utter);
+  }
+
+  // ===== Chat send =====
   async function callBackendSend(text) {
     const BASE_URL = (import.meta.env.VITE_API_URL || "http://localhost:5000").trim();
     try {
@@ -101,6 +122,7 @@ export default function Chat() {
     setInput("");
 
     const data = await callBackendSend(trimmed);
+
     if (data?.reply) {
       const botMsg = { id: Date.now() + 1, from: "bot", text: data.reply };
       setMessages((m) => [...m, botMsg]);
@@ -113,9 +135,13 @@ export default function Chat() {
     }
     if (data?.sessionId) setSessionId(data.sessionId);
 
-    // update history list quickly (optimistic)
-    if (!history.find((h) => h.sessionId === (data?.sessionId || sessionId))) {
-      setHistory((h) => [{ sessionId: data?.sessionId || sessionId, title: trimmed, updatedAt: Date.now() }, ...h]);
+    // optimistic history add
+    const thisId = data?.sessionId || sessionId;
+    if (!history.find((h) => h.sessionId === thisId)) {
+      setHistory((h) => [
+        { sessionId: thisId, title: trimmed, updatedAt: Date.now() },
+        ...h,
+      ]);
     }
   }
 
@@ -130,20 +156,21 @@ export default function Chat() {
     }
   }
 
+  // ===== Voice overlay =====
   function openVoiceOverlay() {
     setVoiceOpen(true);
     if (!recognitionRef.current) recognitionRef.current = createRecognition();
   }
-
   function closeVoiceOverlay() {
     if (recognitionRef.current) {
-      try { recognitionRef.current.stop(); } catch { }
+      try {
+        recognitionRef.current.stop();
+      } catch {}
       recognitionRef.current = null;
     }
     setListening(false);
     setVoiceOpen(false);
   }
-
   function toggleListening() {
     if (!recognitionRef.current) recognitionRef.current = createRecognition();
     if (!recognitionRef.current) {
@@ -161,144 +188,183 @@ export default function Chat() {
     }
   }
 
-  function speakText(text, language = "en") {
-    if (!("speechSynthesis" in window)) return;
-    const utter = new SpeechSynthesisUtterance(text);
-    utter.lang = language;
-    const voices = window.speechSynthesis.getVoices();
-    const v = voices.find((vv) => vv.lang?.startsWith(language));
-    if (v) utter.voice = v;
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(utter);
+  // ===== Header actions =====
+  const filteredHistory = useMemo(() => {
+    const q = historySearch.trim().toLowerCase();
+    if (!q) return history;
+    return history.filter((h) => (h.title || "New chat").toLowerCase().includes(q));
+  }, [history, historySearch]);
+
+  function newChat() {
+    const newId = `sess_${Date.now()}`;
+    setSessionId(newId);
+    setMessages([{ id: Date.now(), from: "bot", text: "How can I help today?" }]);
   }
 
-  async function loadSession(sessionIdToLoad) {
-    setSessionId(sessionIdToLoad);
-    // messages will be loaded by effect that watches sessionId
+  function loadSession(id) {
+    setSessionId(id);
+    setHistoryOpen(false);
   }
+
+  // close dropdown on outside click
+  const dropdownRef = useRef(null);
+  useEffect(() => {
+    function onDocClick(e) {
+      if (!dropdownRef.current) return;
+      if (!dropdownRef.current.contains(e.target)) setHistoryOpen(false);
+    }
+    if (historyOpen) document.addEventListener("click", onDocClick);
+    return () => document.removeEventListener("click", onDocClick);
+  }, [historyOpen]);
 
   return (
     <div className={styles.page}>
       <div className={styles.container}>
-        {/* Desktop layout uses a left area + center chat + right history */}
-        <aside className={styles.leftSidebar}>
-          {/* minimal left sidebar — keep small avatar + nav (you can replace with your real Nav) */}
-          <div className={styles.brand}>
-            <img src={robotAvatar} alt="FreshAir" className={styles.brandAvatar} />
-            <div className={styles.brandText}>FreshAir</div>
+        {/* Header (matches desktop image) */}
+        <header className={styles.topbar}>
+          <div className={styles.topbarLeft}>
+            <Link to="/home" className={styles.backBtn} aria-label="Back">
+              <IoChevronBack size={18} />
+            </Link>
+            <h1 className={styles.title}>FreshAir Bot</h1>
           </div>
-          <nav className={styles.leftNav}>
-            <Link to="/home" className={styles.navItem}>Home</Link>
-            <Link to="/chat" className={`${styles.navItem} ${styles.active}`}>FreshAir Bot</Link>
-            <Link to="/analysis" className={styles.navItem}>Analysis</Link>
-            <Link to="/predetect" className={styles.navItem}>Pre-detection</Link>
-            <Link to="/reports" className={styles.navItem}>Farm Reports</Link>
-            <Link to="/community" className={styles.navItem}>Community</Link>
-            <Link to="/schemes" className={styles.navItem}>Schemes</Link>
-          </nav>
-          <div className={styles.profileMini}>
-            <img src={userAvatar} alt="you" className={styles.brandAvatar} />
-            <div className={styles.profileName}>John Doe</div>
-          </div>
-        </aside>
+          <div className={styles.topbarRight}>
+            <button className={styles.newChatBtn} onClick={newChat}>New Chat</button>
 
-        <section className={styles.chatArea}>
-          <header className={styles.header}>
-            <div className={styles.headerLeft}>
-              <Link to="/home">
-                <button className={styles.backBtn} aria-label="back">
-                  <IoChevronBack size={20} />
-                </button>
-              </Link>
-              <h1 className={styles.title}>FreshAir Bot</h1>
-            </div>
-            <div className={styles.langSelect}>
-              <select value={lang} onChange={(e) => setLang(e.target.value)}>
-                <option value="en">English</option>
-                <option value="hi">हिन्दी</option>
-                <option value="ta">தமிழ்</option>
-                <option value="ml">മലയാളം</option>
-                <option value="bn">বাংলা</option>
-                <option value="mr">मराठी</option>
-              </select>
-            </div>
-          </header>
+            <div className={styles.chatsWrap} ref={dropdownRef}>
+              <button
+                className={styles.chatsBtn}
+                onClick={() => setHistoryOpen((v) => !v)}
+                aria-expanded={historyOpen}
+              >
+                Chats <FiChevronDown />
+              </button>
 
-          <main className={styles.chatCard} aria-live="polite">
-            <div className={styles.messages} ref={scrollRef}>
-              {messages.map((m) => (
-                <div key={m.id} className={`${styles.messageRow} ${m.from === "user" ? styles.rowRight : styles.rowLeft}`}>
-                  {m.from === "bot" && <img src={robotAvatar} alt="bot" className={styles.smallAvatar} />}
-                  <div className={`${styles.bubble} ${m.from === "user" ? styles.bubbleUser : styles.bubbleBot}`}>
-                    <div className={styles.bubbleText}>{m.text}</div>
+              {historyOpen && (
+                <div className={styles.dropdown}>
+                  <div className={styles.searchRow}>
+                    <FiSearch className={styles.searchIcon} />
+                    <input
+                      className={styles.searchInput}
+                      placeholder="Search for chats"
+                      value={historySearch}
+                      onChange={(e) => setHistorySearch(e.target.value)}
+                    />
                   </div>
-                  {m.from === "user" && <img src={userAvatar} alt="you" className={styles.smallAvatar} />}
+                  <div className={styles.historyList}>
+                    {filteredHistory.length === 0 && (
+                      <div className={styles.emptyHint}>No chats</div>
+                    )}
+                    {filteredHistory.map((h) => (
+                      <button
+                        key={h.sessionId}
+                        className={styles.historyItem}
+                        onClick={() => loadSession(h.sessionId)}
+                      >
+                        <span className={styles.historyTitle}>
+                          {h.title || "New chat"}
+                        </span>
+                        <span className={styles.historyMeta}>
+                          {new Date(h.updatedAt || Date.now()).toLocaleString()}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              ))}
+              )}
             </div>
 
-            <div className={styles.inputRow}>
-              <div className={styles.inputWrap}>
-                <input
-                  ref={inputRef}
-                  className={styles.input}
-                  placeholder="Ask about crops, soil, or fertilizers..."
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={onKeyDown}
-                />
-                <button className={styles.micBtn} onClick={openVoiceOverlay} title="Voice input">
-                  <FiMic />
-                </button>
-              </div>
+            <select
+              className={styles.langSelect}
+              value={lang}
+              onChange={(e) => setLang(e.target.value)}
+              aria-label="Language"
+            >
+              <option value="en">English</option>
+              <option value="hi">हिन्दी</option>
+              <option value="ta">தமிழ்</option>
+              <option value="ml">മലയാളം</option>
+              <option value="bn">বাংলা</option>
+              <option value="mr">मराठी</option>
+            </select>
+          </div>
+        </header>
 
-              <button className={styles.sendBtn} onClick={handleSend}>
-                <FiSend />
+        {/* Chat card */}
+        <main className={styles.chatCard} aria-live="polite">
+          <div className={styles.messages} ref={scrollRef}>
+            {messages.map((m) => (
+              <div
+                key={m.id}
+                className={`${styles.messageRow} ${
+                  m.from === "user" ? styles.rowRight : styles.rowLeft
+                }`}
+              >
+                {m.from === "bot" && (
+                  <img src={robotAvatar} alt="bot" className={styles.smallAvatar} />
+                )}
+                <div
+                  className={`${styles.bubble} ${
+                    m.from === "user" ? styles.bubbleUser : styles.bubbleBot
+                  }`}
+                >
+                  <div className={styles.bubbleText}>{m.text}</div>
+                </div>
+                {m.from === "user" && (
+                  <img src={userAvatar} alt="you" className={styles.smallAvatar} />
+                )}
+              </div>
+            ))}
+          </div>
+
+          <div className={styles.inputRow}>
+            <div className={styles.inputWrap}>
+              <input
+                ref={inputRef}
+                className={styles.input}
+                placeholder="Enter your query...."
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={onKeyDown}
+              />
+              <button className={styles.micBtn} onClick={openVoiceOverlay} title="Voice input">
+                <FiMic />
               </button>
             </div>
 
-            {voiceOpen && (
-              <div className={styles.voiceOverlay}>
-                <div className={styles.voiceInner}>
-                  <div className={`${styles.voiceSphere} ${listening ? styles.listening : ""}`}>
-                    <div className={`${styles.cloudLayer} ${styles.cloudA}`} />
-                    <div className={`${styles.cloudLayer} ${styles.cloudB}`} />
-                    <div className={`${styles.cloudLayer} ${styles.cloudC}`} />
-                  </div>
-                  <div className={styles.voiceText}>{listening ? "Listening..." : "Voice Chat"}</div>
-                  <div className={styles.voiceControls}>
-                    <button className={styles.voiceBtn} onClick={toggleListening}>
-                      <FiMic size={20} />
-                    </button>
-                    <button className={styles.voiceBtnOutline} onClick={closeVoiceOverlay}>
-                      <FiX size={20} />
-                    </button>
-                  </div>
+            <button className={styles.sendBtn} onClick={handleSend}>
+              <FiSend />
+            </button>
+          </div>
+
+          {voiceOpen && (
+            <div className={styles.voiceOverlay} role="dialog" aria-modal="true">
+              <div className={styles.voiceInner}>
+                <div className={`${styles.voiceSphere} ${listening ? styles.listening : ""}`}>
+                  <div className={`${styles.cloudLayer} ${styles.cloudA}`} />
+                  <div className={`${styles.cloudLayer} ${styles.cloudB}`} />
+                  <div className={`${styles.cloudLayer} ${styles.cloudC}`} />
+                </div>
+                <div className={styles.voiceText}>
+                  {listening ? "Listening..." : "Voice Chat"}
+                </div>
+                <div className={styles.voiceControls}>
+                  <button className={styles.voiceBtn} onClick={toggleListening}>
+                    <FiMic size={20} />
+                  </button>
+                  <button className={styles.voiceBtnOutline} onClick={closeVoiceOverlay}>
+                    <FiX size={20} />
+                  </button>
                 </div>
               </div>
-            )}
-          </main>
-          <div className={styles.bottomPlaceholder}>
-            <Navbar />
-          </div>
-        </section>
+            </div>
+          )}
+        </main>
 
-        <aside className={styles.historyPanel}>
-          <div className={styles.historyCard}>
-            <div className={styles.historyHeader}>
-              <input placeholder="Search for chats" className={styles.historySearch} />
-            </div>
-            <div className={styles.historyList}>
-              {history.length === 0 && <div className={styles.emptyHint}>No chats yet</div>}
-              {history.map((h) => (
-                <button key={h.sessionId} className={styles.historyItem} onClick={() => loadSession(h.sessionId)}>
-                  <div className={styles.historyTitle}>{h.title || "New chat"}</div>
-                  <div className={styles.historyMeta}>{new Date(h.updatedAt || Date.now()).toLocaleString()}</div>
-                </button>
-              ))}
-            </div>
-          </div>
-        </aside>
+        {/* bottom tab bar (mobile) */}
+        <div className={styles.bottomPlaceholder}>
+          <Navbar />
+        </div>
       </div>
     </div>
   );

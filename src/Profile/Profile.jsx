@@ -22,20 +22,17 @@ export default function Profile() {
         const res = await fetch(`${BACKEND_URL}/api/users/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
+
         if (!res.ok) {
           const cached = localStorage.getItem("user");
           if (cached) setUser(JSON.parse(cached));
           setLoading(false);
           return;
         }
+
         const data = await res.json();
-        if (data?.user) {
-          setUser(data.user);
-          localStorage.setItem("user", JSON.stringify(data.user));
-        } else {
-          const cached = localStorage.getItem("user");
-          if (cached) setUser(JSON.parse(cached));
-        }
+        setUser(data.user);
+        localStorage.setItem("user", JSON.stringify(data.user));
       } catch (err) {
         console.error("Profile load error", err);
         const cached = localStorage.getItem("user");
@@ -70,22 +67,15 @@ export default function Profile() {
     );
   }
 
-  // Backend sends flat fields; map to what UI shows
-  const {
-    name,
-    email,
-    phone,
-    role,
-    soil_type,
-    pincode,
-    state,
-    district,
-    city,
-  } = user;
+  const { name, email, phone, role, soilType, address } = user;
 
   return (
     <div className={styles.viewport}>
-      <div className={styles.container} style={{ paddingBottom: NAV_HEIGHT + 18 }}>
+      <div
+        className={styles.container}
+        style={{ paddingBottom: NAV_HEIGHT + 18 }}
+      >
+        {/* Header */}
         <div className={styles.headerCard}>
           <div className={styles.gradientHeader} />
           <button className={styles.editBtn}>
@@ -102,6 +92,7 @@ export default function Profile() {
           </div>
         </div>
 
+        {/* Details */}
         <div className={styles.detailsCard}>
           <h3 className={styles.sectionTitle}>Profile summary</h3>
 
@@ -111,34 +102,34 @@ export default function Profile() {
           <label className={styles.fieldLabel}>Email</label>
           <div className={styles.inputBox}>{email || "-"}</div>
 
-          <label className={styles.fieldLabel}>Phone</label>
+          <label className={styles.fieldLabel}>Mobile number</label>
           <div className={styles.inputBox}>{phone || "-"}</div>
 
           <label className={styles.fieldLabel}>Role</label>
           <div className={styles.inputBox}>
-            {role === "expert" ? "Expert" : "Farmer"}
+            {role === "user" ? "farmer" : role || "-"}
           </div>
 
-          {role === "user" && soil_type && (
+          {role === "user" && soilType && (
             <>
               <label className={styles.fieldLabel}>Soil / Land Type</label>
-              <div className={styles.inputBox}>{soil_type}</div>
+              <div className={styles.inputBox}>{soilType}</div>
             </>
           )}
 
           <h4 className={styles.subTitle}>Address</h4>
 
           <label className={styles.fieldLabel}>Pincode</label>
-          <div className={styles.inputBox}>{pincode || "-"}</div>
+          <div className={styles.inputBox}>{address?.pincode || "-"}</div>
 
           <label className={styles.fieldLabel}>State</label>
-          <div className={styles.inputBox}>{state || "-"}</div>
+          <div className={styles.inputBox}>{address?.state || "-"}</div>
 
           <label className={styles.fieldLabel}>District</label>
-          <div className={styles.inputBox}>{district || "-"}</div>
+          <div className={styles.inputBox}>{address?.district || "-"}</div>
 
           <label className={styles.fieldLabel}>City</label>
-          <div className={styles.inputBox}>{city || "-"}</div>
+          <div className={styles.inputBox}>{address?.city || "-"}</div>
 
           <div style={{ height: NAV_HEIGHT }} />
           {typeof Navbar === "function" ? <Navbar /> : null}

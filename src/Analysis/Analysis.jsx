@@ -1,8 +1,11 @@
+// src/pages/Analysis.jsx
 import React, { useRef, useState } from "react";
 import styles from "./Analysis.module.css";
 import { BsStars } from "react-icons/bs";
 import { FiUploadCloud, FiInfo, FiX, FiCheck, FiLoader } from "react-icons/fi";
 import Navbar from "../nav/Navbar";
+
+const BACKEND_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 export default function Analysis() {
   const fileInputRef = useRef(null);
@@ -95,7 +98,7 @@ export default function Analysis() {
     formData.append("image", files[0].file); // first image only
 
     try {
-      const res = await fetch("http://localhost:4000/api/analyze", {
+      const res = await fetch(`${BACKEND_URL}/api/analyze`, {
         method: "POST",
         body: formData,
       });
@@ -247,7 +250,6 @@ export default function Analysis() {
             </div>
             <div className={styles.resultText}>
               <strong>Disease Analysis Result</strong>
-              {/* Use a wrapping div so long text breaks and scrolls instead of overflowing */}
               <div className={styles.resultMsg}>{result.message}</div>
             </div>
           </div>
