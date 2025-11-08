@@ -5,7 +5,7 @@ import { BsStars } from "react-icons/bs";
 import { FiUploadCloud, FiInfo, FiX, FiCheck, FiLoader } from "react-icons/fi";
 import Navbar from "../nav/Navbar";
 
-const BACKEND_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const BACKEND_URL = import.meta.env.VITE_API_URL;
 
 export default function Analysis() {
   const fileInputRef = useRef(null);
