@@ -1,0 +1,330 @@
+:root {
+  --glass: rgba(255, 255, 255, 0.15);
+  --glass-2: rgba(255, 255, 255, 0.12);
+  --card-radius: 18px;
+  --soft-shadow: 0 10px 30px rgba(15, 20, 25, 0.18);
+  --accent: rgba(255, 255, 255, 0.08);
+}
+
+.container {
+  min-height: 100vh;
+  /* width: min(412px, 100vw); 
+  max-width: 412px; */
+  margin: 0 auto;
+  background-size: cover;
+  background-position: center center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  color: #0b1320;
+  position: relative;
+  padding: 22px 18px 92px;
+  box-sizing: border-box;
+  background-color: #f5f7f8;
+}
+
+/* top bar */
+.topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.greeting {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 6px 14px rgba(15, 20, 25, 0.12);
+  border: 2px solid rgba(255, 255, 255, 0.6);
+}
+
+.greetText .small {
+  font-size: 12px;
+  color: #ffffff;
+  opacity: 0.9;
+  margin-bottom: 2px;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.greetText .name {
+  font-weight: 700;
+  font-size: 14px;
+  color: #ffffff;
+}
+
+.topActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ---- Language dropdown ---- */
+.langWrapper {
+  position: relative;
+  display: inline-block;
+  font-family: inherit;
+}
+
+/* main button that shows current language */
+.langButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.18);
+  padding: 8px 12px;
+  border-radius: 999px;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 13px;
+  border: none;
+  cursor: pointer;
+  box-shadow: var(--soft-shadow);
+}
+
+/* small label inside button to keep spacing */
+.langLabel {
+  line-height: 1;
+}
+
+/* chevron style */
+.langChevron {
+  transform: translateY(1px);
+}
+
+/* dropdown menu */
+.langMenu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  background: #ffffff;
+  border-radius: 12px;
+  min-width: 140px;
+  box-shadow: 0 12px 30px rgba(12, 15, 20, 0.12);
+  overflow: hidden;
+  z-index: 120;
+  padding: 6px 6px;
+}
+
+/* each option */
+.langItem {
+  list-style: none;
+  padding: 10px 12px;
+  font-size: 14px;
+  color: #111827;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 120ms ease, transform 80ms ease;
+}
+
+/* hover / active */
+.langItem:hover {
+  background: rgba(17, 61, 254, 0.06);
+  transform: translateY(-1px);
+}
+
+/* ---- existing bell button ---- */
+.bell {
+  background: rgba(255, 255, 255, 0.18);
+  border: none;
+  padding: 10px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  box-shadow: var(--soft-shadow);
+}
+
+/* rest of your CSS (kept as before) */
+.contentWrap {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Main weather card */
+.weatherCard {
+  border-radius: 20px;
+  padding: 18px;
+  backdrop-filter: blur(8px) saturate(120%);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.08) 100%);
+  box-shadow: var(--soft-shadow);
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+.locationBadge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 6px 10px;
+  border-radius: 14px;
+  font-size: 12px;
+  margin-bottom: 12px;
+  color: #ffffff;
+  width: fit-content;
+}
+
+.weatherMain {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tempLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tempLarge {
+  font-size: 48px;
+  /* font-weight: 800; */
+  line-height: 1;
+  color: #ffffff;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.degree {
+  font-size: 20px;
+  align-self: flex-start;
+  margin-top: 8px;
+  color: #ffffff;
+}
+
+.timeSmall {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.conditionBadge {
+  margin-top: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.12);
+  padding: 8px 12px;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 13px;
+}
+
+.sunIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sunShape {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 30px rgba(255, 180, 60, 0.12);
+}
+
+/* Stats row */
+.statsRow {
+  display: flex;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.statCard {
+  flex: 1;
+  border-radius: 16px;
+  padding: 16px;
+  backdrop-filter: blur(6px);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%);
+  box-shadow: var(--soft-shadow);
+  color: #fff;
+}
+
+.statLabel {
+  font-size: 13px;
+  opacity: 0.95;
+  margin-bottom: 8px;
+}
+
+.statValue {
+  font-size: 28px;
+  /* font-weight: 800; */
+  display: flex;
+  align-items: center;
+}
+
+.features {
+  margin-top: 8px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.featureCard {
+  background: #fff;
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 8px 20px rgba(12, 15, 20, 0.06);
+  position: relative;
+  overflow: hidden;
+  min-height: 110px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.featureIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #f3f6ff, #ffffff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #3b4aef;
+  box-shadow: 0 4px 12px rgba(59, 74, 239, 0.08);
+}
+
+.featureTitle {
+  font-weight: 600;
+  font-size: 15px;
+  color: #0b1320;
+}
+
+.featureDesc {
+  font-size: 12px;
+  color: #6b6f76;
+  margin-top: 4px;
+}
+
+.circularArrow {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000000;
+  color: #ffffff;
+}

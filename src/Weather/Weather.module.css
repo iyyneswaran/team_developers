@@ -1,0 +1,282 @@
+:root{
+  --bg: #f7fafb;
+  --card: #ffffff;
+  --muted: #9aa7ad;
+  --accent: #00c853;
+  --soft-red: #ffe6e9;
+  --danger-red: #ff6b6b;
+  --pill-green: #e6f9ed;
+  --pill-green-text: #2f9a52;
+  --shadow: 0 6px 18px rgba(6,24,40,0.06);
+  --radius: 16px;
+}
+
+/* page container */
+.page {
+  background: var(--bg);
+  min-height: 100vh;
+  padding: 22px 18px;
+  font-family: "Inter", "Segoe UI", Roboto, system-ui, -apple-system, "Helvetica Neue", Arial;
+  color: #04121a;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+/* Title */
+.title {
+  font-size: 20px;
+  margin: 4px 0 18px 6px;
+  font-weight: 700;
+}
+
+/* Top card */
+.topCard {
+  background: var(--card);
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: visible;
+  margin-bottom: 18px;
+}
+
+.locationRow {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 8px;
+}
+
+.locationBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #f0f5f6;
+  padding: 6px 10px;
+  border-radius: 999px;
+  color: #475c63;
+  font-size: 13px;
+  max-width: 220px;
+}
+
+.locIcon {
+  font-size: 16px;
+  color: #5a6b70;
+}
+
+/* content inside top card */
+.topContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tempBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-right: 6px;
+}
+
+.tempValue {
+  font-size: 44px;
+  font-weight: 700;
+  letter-spacing: -1px;
+  color: #0b1820;
+}
+
+.date {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: -6px;
+}
+
+/* small sunny pill */
+.smallBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff6e6;
+  border-radius: 14px;
+  padding: 6px 10px;
+  font-size: 13px;
+  color: #c07700;
+  width: fit-content;
+  box-shadow: inset 0 0 0 1px rgba(255,180,20,0.04);
+}
+
+.smallSun {
+  font-size: 15px;
+}
+
+/* large sun art */
+.sunArt {
+  width: 110px;
+  height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 6px;
+}
+
+.sunEmoji {
+  font-size: 78px;
+  transform: translateY(4px);
+  filter: drop-shadow(0 6px 8px rgba(255,174,48,0.18));
+}
+
+/* metrics row */
+.metricsRow {
+  display: flex;
+  gap: 12px;
+  margin: 6px 0 14px;
+}
+
+.metricCard {
+  flex: 1;
+  background: var(--card);
+  border-radius: 14px;
+  padding: 18px 14px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.metricLabel {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.metricValue {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 28px;
+  font-weight: 700;
+  color: #0b1820;
+}
+
+.metricIcon {
+  font-size: 20px;
+  color: #2b3a3f;
+  transform: translateY(3px);
+}
+
+/* day pills */
+.dayPills {
+  display: flex;
+  gap: 10px;
+  margin: 8px 0 12px;
+  padding: 10px 6px;
+  align-items: center;
+  overflow-x: auto;
+}
+
+.pill {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #e8f6f6;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: #3a4850;
+  box-shadow: 0 1px 0 rgba(7,15,21,0.02);
+}
+
+.activePill {
+  background: linear-gradient(180deg,#2f66ff,#1f4fe6);
+  color: white;
+  box-shadow: 0 6px 18px rgba(47,102,255,0.16);
+}
+
+/* day card */
+.dayCard {
+  background: var(--card);
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: var(--shadow);
+  margin-bottom: 14px;
+}
+
+.dayTitle {
+  margin: 0 0 6px 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.dayText {
+  margin: 0;
+  color: #334b52;
+  line-height: 1.45;
+}
+
+/* recommendation card */
+.recoCard {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: var(--shadow);
+  margin-bottom: 18px;
+}
+
+.recoHeader {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 8px;
+}
+
+.greenPill {
+  background: var(--pill-green);
+  color: var(--pill-green-text);
+  padding: 6px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: inset 0 -1px 0 rgba(0,0,0,0.02);
+}
+
+.recoBody {
+  padding-top: 8px;
+}
+
+.recoRow {
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #16323a;
+}
+
+.crop {
+  color: #0b7a3a;
+  font-weight: 700;
+}
+
+/* weather highlight */
+.weatherHighlight {
+  color: #d07b00;
+  font-weight: 700;
+}
+
+/* alert box (red rounded) */
+.alertBox {
+  margin-top: 8px;
+  background: var(--soft-red);
+  border-left: 4px solid rgba(255,107,107,0.9);
+  padding: 12px;
+  border-radius: 10px;
+  color: #7a2b2b;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+/* small responsiveness */
+@media (max-width: 420px) {
+  .page { padding: 18px 16px; }
+  .sunArt { width: 92px; height: 92px; }
+  .sunEmoji { font-size: 66px; }
+  .tempValue { font-size: 40px; }
+  .metricValue { font-size: 24px; }
+}

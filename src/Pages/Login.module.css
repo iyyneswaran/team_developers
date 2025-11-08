@@ -1,0 +1,119 @@
+.viewport {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px;
+  background: var(--page-bg);
+  box-sizing: border-box;
+}
+
+.container {
+  width: 100%;
+  max-width: 520px;
+  padding: 16px;
+}
+
+.card {
+  width: 100%;
+  background: var(--card-bg);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  box-shadow: var(--shadow);
+  box-sizing: border-box;
+}
+
+.title {
+  margin: 0 0 8px 0;
+  font-size: 20px;
+}
+
+.label {
+  display: block;
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  border-radius: 8px;
+  border: 1px solid var(--light-border);
+  font-size: 14px;
+}
+
+.row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: 6px;
+}
+
+.radio {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.error {
+  margin-top: 10px;
+  color: #b00020;
+  font-size: 13px;
+}
+
+.submit {
+  width: 100%;
+  margin-top: 18px;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  background: var(--accent);
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.footer {
+  margin-top: 12px;
+  font-size: 13px;
+  text-align: center;
+  color: var(--muted);
+}
+
+.linkBtn {
+  background: none;
+  border: none;
+  color: var(--accent);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding: 12px;
+  }
+}
+
+.passwordWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.eyeBtn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #666;
+  padding: 4px;
+}
+
+.eyeBtn:hover {
+  color: #000;
+}

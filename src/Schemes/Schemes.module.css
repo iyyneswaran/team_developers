@@ -1,0 +1,131 @@
+:root{
+  --bg: #f7fafb;
+  --card: #ffffff;
+  --muted: #67757b;
+  --blue-accent: #2f66ff;
+  --soft-shadow: 0 8px 20px rgba(6,24,40,0.06);
+  --radius: 14px;
+  --pill-blue-bg: #e8f7ff;
+  --pill-purple-bg: #f2eaff;
+  --pill-blue-text: #1f64e6;
+  --pill-purple-text: #7b59d8;
+}
+
+/* page container */
+.page {
+  background: var(--bg);
+  min-height: 100vh;
+  padding: 22px 18px;
+  font-family: "Inter", "Segoe UI", Roboto, system-ui, -apple-system, "Helvetica Neue", Arial;
+  color: #07161b;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+/* Title */
+.title {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 4px 0 16px 6px;
+}
+
+/* section wrapper */
+.section {
+  margin-bottom: 18px;
+}
+
+/* pill row */
+.pillRow {
+  margin: 0 6px 12px 6px;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* pill variants */
+.pillBlue {
+  background: var(--pill-blue-bg);
+  color: var(--pill-blue-text);
+}
+
+.pillPurple {
+  background: var(--pill-purple-bg);
+  color: var(--pill-purple-text);
+}
+
+.pillIcon {
+  font-size: 10px;
+  transform: translateY(-1px);
+}
+
+/* list of cards */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0 4px;
+}
+
+/* card */
+.card {
+  background: var(--card);
+  border-radius: 12px;
+  box-shadow: var(--soft-shadow);
+  overflow: visible;
+  padding: 0; /* inner spacing handled by cardInner */
+  position: relative;
+}
+
+/* inner wrapper to create left accent line and spacing */
+.cardInner {
+  padding: 14px 14px 16px 18px;
+  border-left: 4px solid transparent;
+  border-radius: 12px;
+}
+
+/* left accent color for all cards - subtle blue stroke with rounded cap */
+.card::before{
+  content: "";
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  bottom: 10px;
+  width: 4px;
+  background: linear-gradient(180deg,#2f66ff,#6ea1ff20);
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+/* For visual parity with screenshot (some cards might look plain),
+   make the accent slightly inset with white gap on left */
+.cardInner { margin-left: 6px; }
+
+/* title and description inside card */
+.cardTitle {
+  margin: 0 0 6px 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #0b1820;
+}
+
+.cardDesc {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+/* subtle small-screen adjustments */
+@media (max-width: 420px) {
+  .page { padding: 18px 14px; }
+  .title { font-size: 20px; margin-left: 4px; }
+  .cardInner { padding: 12px 12px 14px 16px; }
+  .card::before { left: 8px; top: 8px; bottom: 8px; border-radius: 7px; }
+}

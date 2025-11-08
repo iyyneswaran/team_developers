@@ -1,0 +1,215 @@
+:root{
+  --page-bg: #f6fafb;
+  --card-bg: #ffffff;
+  --muted: #6b7b82;
+  --accent: #2f66ff;
+  --light-border: #e6e9ec;
+  --radius-lg: 20px;
+  --radius-md: 12px;
+  --shadow: 0 10px 26px rgba(6,24,40,0.06);
+  --nav-height: 76px;
+}
+
+/* viewport ensures full-screen and mobile friendly scroll */
+.viewport {
+  background: var(--page-bg);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  font-family: Inter, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  color: #08121a;
+}
+
+/* container centers and constrains width (mobile look) */
+.container {
+  width: 100%;
+  /* max-width: 420px; */
+  padding: 38px;
+  box-sizing: border-box;
+}
+
+/* Header card with gradient banner and avatar overlapping */
+.headerCard {
+  position: relative;
+  background: var(--card-bg);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  overflow: visible;
+  padding: 18px;
+  height: 140px;
+}
+
+/* gradient header area (rounded inside card) */
+.gradientHeader {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  top: 12px;
+  height: 84px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ffd3d3 0%, #caa7ff 40%, #f2c0ff 60%, #bcd8ff 100%);
+  filter: saturate(1.02);
+  z-index: 1;
+}
+
+/* Edit button inside header (top-right) */
+.editBtn {
+  position: absolute;
+  right: 18px;
+  top: 18px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: #ffffffee;
+  border-radius: 14px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid var(--light-border);
+  box-shadow: 0 4px 10px rgba(6,24,40,0.06);
+  cursor: pointer;
+}
+
+/* edit icon styling */
+.editIcon {
+  font-size: 14px;
+  color: #24303a;
+}
+
+/* avatar wrap to place avatar overlapping the gradient header bottom-left */
+.avatarWrap {
+  position: absolute;
+  left: 22px;
+  bottom: -28px;
+  z-index: 4;
+}
+
+.avatarCircle {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #f0e7ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 6px solid var(--card-bg); /* white ring */
+  box-shadow: 0 6px 18px rgba(24,40,60,0.06);
+}
+
+/* emoji avatar size */
+.avatarEmoji {
+  font-size: 36px;
+  display: inline-block;
+  transform: translateY(2px);
+  display: flex;
+  align-items: center;
+  justify-content:   center;
+}
+
+/* Details card: scrollable content area */
+.detailsCard {
+  margin-top: 44px; /* leave space for overlapping avatar */
+  background: transparent; /* transparent so it flows with page - card visuals inside */
+  border-radius: var(--radius-md);
+  padding: 4px 2px 8px 2px;
+}
+
+/* section title (main) */
+.sectionTitle {
+  margin: 12px 8px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #0b1820;
+}
+
+/* labels and input-like boxes */
+.fieldLabel {
+  display: block;
+  margin: 12px 8px 6px 8px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.inputBox {
+  margin: 0 8px;
+  padding: 12px 14px;
+  border: 1px solid var(--light-border);
+  border-radius: 8px;
+  background: var(--card-bg);
+  font-size: 14px;
+  color: #122029;
+  box-shadow: 0 4px 10px rgba(6,24,40,0.02);
+}
+
+/* subtitle for grouped sections */
+.subTitle {
+  margin: 18px 8px 8px 8px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #0b1820;
+}
+
+/* grid for land chips */
+.landGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: 0 8px;
+}
+
+/* each chip looks like a small card */
+.landChip {
+  background: var(--card-bg);
+  border-radius: 10px;
+  padding: 10px;
+  border: 1px solid var(--light-border);
+  box-shadow: 0 6px 18px rgba(6,24,40,0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+  min-height: 64px;
+  box-sizing: border-box;
+}
+
+/* chip label (small) */
+.chipLabel {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* chip value (prominent) */
+.chipValue {
+  font-weight: 700;
+  font-size: 14px;
+  color: #0b1820;
+}
+
+/* responsive: if width small, 2 columns instead of 3 */
+@media (max-width: 360px) {
+  .landGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* make whole page scrollable but keep nav fixed — outer viewport handles full height */
+.container {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* small visual polish */
+.container::-webkit-scrollbar { width: 8px; }
+.container::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.06); border-radius: 6px; }
+
+/* Ensure bottom spacing is visible on short content */
+@media (max-height: 700px) {
+  .detailsCard { padding-bottom: 28px; }
+}
+
+
+.avatar {
+    height: 80px;
+    width: 80px;
+}
